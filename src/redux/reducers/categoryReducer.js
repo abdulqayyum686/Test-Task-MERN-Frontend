@@ -32,8 +32,9 @@ export const addCategory = createAsyncThunk("addCategory", async (data) => {
 });
 export const getAllCategory = createAsyncThunk("getAllCategory", async (id) => {
   try {
+    console.log(id);
     const res = await axiosInstance.get(`category/get-category/${id}`);
-    return res.data;
+    return res.data.data;
   } catch (err) {
     Swal.fire({
       icon: "error",
@@ -46,7 +47,7 @@ export const updateCategory = createAsyncThunk(
   "updateCategory",
   async (data) => {
     try {
-      const res = await axiosInstance.post(
+      const res = await axiosInstance.put(
         `category/update-category/${data.id}`,
         data.data
       );

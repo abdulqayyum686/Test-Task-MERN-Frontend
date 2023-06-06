@@ -40,7 +40,10 @@ const Login = () => {
       password: value.password,
     };
     resetForm({ value: "" });
-    let loginRes = await dispatch(userLogin(data));
+    let res = await dispatch(userLogin(data));
+    if (res.payload) {
+      navigate("/home");
+    }
   };
 
   return (
@@ -60,9 +63,7 @@ const Login = () => {
                 <div className="logo_form_text_box">
                   <div className="login_content_box">
                     <div className="login_heading">Login</div>
-
                     <div className="login_feild">
-                      {" "}
                       <div className="login_feild_box">
                         <Field
                           className="login_inputs"
@@ -75,7 +76,6 @@ const Login = () => {
                       <ErrorMessage name="email" />
                     </span>
                     <div className="login_feild">
-                      {" "}
                       <div className="login_feild_box">
                         <Field
                           className="login_inputs"
@@ -96,7 +96,7 @@ const Login = () => {
                     </div>
                     <div className="login_btn_wraper">
                       <div className="sign_up_or">
-                        Or{" "}
+                        Or
                         <Link className="navi_lins" to="/sign-up">
                           <span className="sgnup_opt">Signup</span>
                         </Link>

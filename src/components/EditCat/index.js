@@ -1,21 +1,36 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addCategory } from "../../redux/reducers/categoryReducer";
+import {
+  updateCategory,
+  getAllCategory,
+} from "../../redux/reducers/categoryReducer";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const AddCat = () => {
+const EditCat = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { state } = useLocation();
+  console.log("state", state);
   const userReducer = useSelector((s) => s.userReducer.currentUser);
   const [category, setCategory] = useState({
-    title: "",
+    title: state.title,
     belongsTo: "",
   });
-  
+
   const handelChane = (e) => {
     setCategory({ ...category, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = (e) => {
-    dispatch(addCategory({ ...category, belongsTo: userReducer._id }));
+  const onSubmit = async (e) => {
+    let obj = {
+      data: { ...category, belongsTo: userReducer._id },
+      id: state._id,
+    };
+    let res = await dispatch(updateCategory(obj));
+    if (res.payload) {
+      dispatch(getAllCategory(userReducer?._id));
+      navigate("/home");
+    }
     setCategory({ ...category, title: "" });
   };
 
@@ -23,17 +38,18 @@ const AddCat = () => {
     <>
       <div className="home_container">
         <div>
-          <div>Add category</div>
+          <div>Update Category</div>
           <div className="add_cat">
             <input
               placeholder="enter category title "
               className="input_ele"
               name="title"
+              value={category.title}
               onChange={(e) => handelChane(e)}
             />
           </div>
           <div className="cat_submit" onClick={() => onSubmit()}>
-            Submit
+            Update
           </div>
         </div>
       </div>
@@ -41,4 +57,4 @@ const AddCat = () => {
   );
 };
 
-export default AddCat;
+export default EditCat;

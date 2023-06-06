@@ -7,12 +7,6 @@ import Cookies from "universal-cookie";
 const cookies = new Cookies();
 const initialState = {
   currentUser: null,
-  activePageTab: "",
-  alluser: null,
-  userProducts: null,
-  chekDate: "",
-  allProducts: null,
-  verifyPayment: "",
 };
 // =========user login
 export const userLogin = createAsyncThunk("userLogin", async (data) => {
@@ -28,7 +22,7 @@ export const userLogin = createAsyncThunk("userLogin", async (data) => {
       showConfirmButton: false,
       timer: 2000,
     });
-    return res.data;
+    return res.data.user;
   } catch (err) {
     console.log("backend error", err);
     Swal.fire({
@@ -53,7 +47,11 @@ export const userReducer = createSlice({
   name: "userReducer",
   initialState: initialState,
 
-  reducers: {},
+  reducers: {
+    setCurrentUser(state, action) {
+      state.currentUser = action.payload;
+    },
+  },
   extraReducers: {
     [userLogin.fulfilled]: (state, action) => {
       state.currentUser = action.payload;
@@ -62,5 +60,5 @@ export const userReducer = createSlice({
   },
 });
 // Action creators are generated for each case reducer function
-export const {} = userReducer.actions;
+export const { setCurrentUser } = userReducer.actions;
 export default userReducer.reducer;

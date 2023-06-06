@@ -1,296 +1,178 @@
 import React, { useEffect, useState } from "react";
 import "./home.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import Swal from "sweetalert2";
 import DataTableCom from "./dataTable";
+import {
+  deleteCategory,
+  getAllCategory,
+} from "../../redux/reducers/categoryReducer";
+import { deleteCar, getAllCar } from "../../redux/reducers/carReducer";
+import { AiFillEdit } from "react-icons/ai";
+import { AiFillDelete } from "react-icons/ai";
 
 const Home = () => {
-  const [update, setUpdate] = useState();
-  const [show, setShow] = useState(false);
-  const [editmodal, setEditModal] = useState(false);
-  const [support, setSupport] = useState(false);
-  const [extrahour, setExtraHour] = useState(false);
-  const [equipment, setEquipment] = useState(false);
-  const [image1, setImage1] = useState(null);
-  const [preview1, setPreview1] = useState(null);
-  const [image2, setImage2] = useState(null);
-  const [preview2, setPreview2] = useState(null);
-  const [image3, setImage3] = useState(null);
-  const [vediostate, setVedioState] = useState(null);
-  const [preview3, setPreview3] = useState(null);
-  const [vedioPreview, setVedioPreview] = useState(null);
-  const [inputs, setInputs] = useState();
-
-  const [more, setMore] = useState([
-    {
-      choseCurency: "",
-      catName: "",
-      catDescription: "",
-      availability: "",
-      delivery: "",
-      extra: "",
-      equipment: "",
-      currencySymbol: "",
-    },
-  ]);
-  const [editmore, setEditMore] = useState([
-    {
-      choseCurency: "",
-      catName: "",
-      catDescription: "",
-      availability: "",
-      delivery: "",
-      extra: "",
-      equipment: "",
-      currencySymbol: "",
-    },
-  ]);
-  const currentUser = useSelector((state) => state.userReducer.currentUser);
-
+  const navigate = useNavigate();
+  const userReducer = useSelector((state) => state.userReducer.currentUser);
+  const categoryReducer = useSelector((state) => state.categoryReducer);
+  const carReducer = useSelector((state) => state.carReducer);
   const dispatch = useDispatch();
-  const handleImageChange1 = (e) => {
-    const selectedImage = e.target.files[0];
-    setImage1(selectedImage);
-    setPreview1(URL.createObjectURL(selectedImage));
-    setInputs((values) => ({ ...values, image1: selectedImage }));
-  };
-  const handleImageChange2 = (e) => {
-    const selectedImage = e.target.files[0];
-    setImage2(selectedImage);
-    setPreview2(URL.createObjectURL(selectedImage));
-    setInputs((values) => ({ ...values, image2: selectedImage }));
-  };
-  const handleVedioUpload = (e) => {
-    const vedio = e.target.files[0];
-    setVedioState(vedio);
-    setVedioPreview(URL.createObjectURL(vedio));
-    setInputs((values) => ({ ...values, vedioMasg: vedio }));
-  };
-  const handleImageChange3 = (e) => {
-    const selectedImage = e.target.files[0];
-    setImage3(selectedImage);
-    setPreview3(URL.createObjectURL(selectedImage));
-    setInputs((values) => ({ ...values, image3: selectedImage }));
-  };
-  const handleClose = () => {
-    setShow(false);
-  };
-  const handleCloseEditModal = () => {
-    setEditModal(false);
-  };
-  const handleShow = () => setShow(true);
-  const handleExtraHour = () => {
-    setExtraHour(!extrahour);
-  };
-  const handleEquipment = () => {
-    setEquipment(!equipment);
-  };
-  const handleAddMore = () => {
-    const newObj = {
-      choseCurency: "",
-      catName: "",
-      catDescription: "",
-      availability: "",
-      delivery: "",
-      extra: "",
-      equipment: "",
-      currencySymbol: "",
-    };
-    setMore([...more, newObj]);
-  };
-  const handleRemoveItem = (index) => {
-    const array = [...more];
-    const removed = array.splice(index, 1);
-    setMore(array);
-  };
-  const handleChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setInputs((values) => ({ ...values, [name]: value }));
+  useEffect(() => {
+    console.log(userReducer, "currentUser2225656565656");
+    if (userReducer) {
+      console.log(userReducer, "currentUser222");
+      dispatch(getAllCategory(userReducer?._id));
+      dispatch(getAllCar(userReducer?._id));
+    }
+  }, [userReducer]);
+
+  const goTo = (url) => {
+    navigate(url);
   };
 
-  const handleChangeDynamicly = (event, i) => {
-    const { value, name } = event.target;
-    const newState = [...more];
-    newState[i] = {
-      ...newState[i],
-      [name]: value,
-    };
-    console.log(newState);
-    setMore(newState);
+  const columns2 = [
+    {
+      name: "Category Title",
+      selector: (row) => row.title,
+    },
+    {
+      name: "Description",
+      selector: (row) => row?.description,
+    },
+    {
+      name: "Milage",
+      selector: (row) => row?.milage,
+    },
+    {
+      name: "Year",
+      selector: (row) => row?.year,
+    },
+    {
+      name: "color",
+      selector: (row) => row?.color,
+    },
+    {
+      name: "model",
+      selector: (row) => row?.model,
+    },
+    {
+      name: "Car Belongs To",
+      selector: (row) => row?.belongsTo?.email,
+    },
+    {
+      name: "Action",
+      selector: (row) => (
+        <div style={{ display: "flex", cursor: "pointer" }}>
+          <AiFillEdit
+            size={20}
+            style={{ marginRight: "10px" }}
+            onClick={() => handelEditCar(row)}
+          />
+          <AiFillDelete size={20} onClick={() => handelDeleteCar(row)} />
+        </div>
+      ),
+    },
+  ];
+  const columns = [
+    {
+      name: "Category Title",
+      selector: (row) => row.title,
+    },
+    {
+      name: "Category Belongs To",
+      selector: (row) => row?.belongsTo?.email,
+    },
+    {
+      name: "Action",
+      selector: (row) => (
+        <div style={{ display: "flex", cursor: "pointer" }}>
+          <AiFillEdit
+            size={20}
+            style={{ marginRight: "10px" }}
+            onClick={() => handelEditCategory(row)}
+          />
+          <AiFillDelete size={20} onClick={() => handelDeleteCategory(row)} />
+        </div>
+      ),
+    },
+  ];
+  const handelEditCar = (row) => {
+    navigate("/edit-car", {
+      state: row,
+    });
   };
-  const handleAudioFile = (e) => {
-    const uploadFile = e.target.files[0];
-
-    setInputs((values) => ({ ...values, audioFile: uploadFile }));
-  };
-  const handleSubmit = () => {
-    const formData = new FormData();
-    formData.append("name", inputs.name);
-    formData.append("address", inputs.address);
-    formData.append("description", inputs.description);
-    formData.append("image1", inputs.image1);
-    formData.append("image2", inputs.image2);
-    formData.append("image3", inputs.image3);
-    formData.append("audioFile", inputs.audioFile);
-    formData.append("vedioMasg", inputs.vedioMasg);
-    // formData.append("current", user_id);
-    formData.append("offers", JSON.stringify(more));
-
-    setSupport(true);
-  };
-
-  const handleCalnder = (date, i) => {
-    const newState = [...more];
-    newState[i] = {
-      ...newState[i],
-      ["availability"]: JSON.stringify(date),
-    };
-    console.log(newState);
-    setMore(newState);
-  };
-  const handleDeleteProduct = (id) => {
-    console.log("click");
+  const handelDeleteCar = (row) => {
+    // console.log("lllllll", row);
     Swal.fire({
       title: "Are you sure?",
-      text: "You want to delete this product!",
+      text: "Are you sure you want to delete this!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "delete!",
-    }).then((result) => {
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setSupport(true);
+        let res = await dispatch(deleteCar(row._id));
+        if (res.payload) {
+          dispatch(getAllCar(userReducer?._id));
+        }
       }
     });
   };
-  const handleEditProduct = (data) => {
-    console.log("edit", data.offers);
-    setUpdate(data);
-    setEditModal(true);
-    setEditMore(JSON.parse(data.offers));
-  };
-  const handleEditChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setUpdate((values) => ({ ...values, [name]: value }));
-  };
-  const handleEditRemoveItem = (index) => {
-    const array = [...editmore];
-    const removed = array.splice(index, 1);
-    setEditMore(array);
-  };
-  const handleChangeEditDynamicly = (event, i) => {
-    const { value, name } = event.target;
-    const newState = [...editmore];
-    newState[i] = {
-      ...newState[i],
-      [name]: value,
-    };
-    console.log(newState);
-    setEditMore(newState);
-  };
-  const handleEditCalnder = (date, i) => {
-    const newState = [...editmore];
-    newState[i] = {
-      ...newState[i],
-      ["availability"]: JSON.stringify(date),
-    };
-    setEditMore(newState);
-  };
-  const handleEditAddMore = () => {
-    const newObj = {
-      choseCurency: "",
-      catName: "",
-      catDescription: "",
-      availability: "",
-      delivery: "",
-      extra: "",
-      equipment: "",
-      currencySymbol: "",
-    };
-    setEditMore([...editmore, newObj]);
-  };
-  const handleEditAudioFile = (e) => {
-    const uploadFile = e.target.files[0];
-    console.log("uploadfile", uploadFile);
-    setUpdate((values) => ({ ...values, audioFile: uploadFile }));
-  };
-  const handleEditImageChange1 = (e) => {
-    const selectedImage = e.target.files[0];
-    setImage1(selectedImage);
-    setPreview1(URL.createObjectURL(selectedImage));
-    setUpdate((values) => ({ ...values, image1: selectedImage }));
-  };
-  const handleEditImageChange2 = (e) => {
-    const selectedImage = e.target.files[0];
-    setImage2(selectedImage);
-    setPreview2(URL.createObjectURL(selectedImage));
-    setUpdate((values) => ({ ...values, image2: selectedImage }));
-  };
-  const handleEditImageChange3 = (e) => {
-    const selectedImage = e.target.files[0];
-    setImage3(selectedImage);
-    setPreview3(URL.createObjectURL(selectedImage));
-    setUpdate((values) => ({ ...values, image3: selectedImage }));
-  };
-  const handleEditVedioUpload = (e) => {
-    const vedio = e.target.files[0];
-    setVedioState(vedio);
-    setVedioPreview(URL.createObjectURL(vedio));
-    setUpdate((values) => ({ ...values, vedioMasg: vedio }));
-  };
-  const handleEditSubmit = () => {
-    const formData = new FormData();
-    formData.append("name", update?.name);
-    formData.append("address", update?.address);
-    formData.append("description", update?.description);
-    formData.append("image1", update?.image1);
-    formData.append("image2", update?.image2);
-    formData.append("image3", update?.image3);
-    formData.append("audioFile", update?.audioFile);
-    formData.append("vedioMasg", update?.vedioMasg);
-    // formData.append("current", user_id);
-    formData.append("offers", JSON.stringify(editmore));
-
-    let obj = {
-      id: update._id,
-      data: formData,
-    };
-
-    setEditModal(false);
-    setSupport(true);
-    Swal.fire({
-      position: "center",
-      icon: "success",
-      title: "This product update successfully",
-      showConfirmButton: false,
-      timer: 1500,
+  const handelEditCategory = (row) => {
+    navigate("/edit-category", {
+      state: row,
     });
   };
-
+  const handelDeleteCategory = (row) => {
+    console.log("lllllll", row);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Are you sure you want to delete this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let res = dispatch(deleteCategory(row._id));
+        if (res.payload) {
+          dispatch(getAllCategory(userReducer?._id));
+        }
+      }
+    });
+  };
   return (
     <>
       <div className="home_container">
         <div className="add_new_box">
-          <Link to="/add-cat">
-            <div className="add_new_opt" onClick={handleShow}>
+          <Link to="/add-category">
+            <div className="add_new_opt" onClick={() => goTo("/add-category")}>
               Add category
             </div>
           </Link>
-          <Link to="/add-item">
-            <div className="add_new_opt" onClick={handleShow}>
-              Add car
+          <Link to="/add-car">
+            <div className="add_new_opt" onClick={() => goTo("/add-car")}>
+              Add Car
             </div>
           </Link>
         </div>
         <div className="home_card_box">
-          <DataTableCom />
+          <p>List of Cars</p>
+          <DataTableCom data={carReducer?.getAllCar} columns={columns2} />
+        </div>
+        <div className="home_card_box">
+          <p>List of Categories</p>
+          <DataTableCom
+            data={categoryReducer?.getAllCategory}
+            columns={columns}
+          />
         </div>
       </div>
     </>
