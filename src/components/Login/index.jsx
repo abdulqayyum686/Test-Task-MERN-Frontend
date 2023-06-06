@@ -87,8 +87,6 @@ const Login = () => {
                     <span className="text-danger d-flex text-start">
                       <ErrorMessage name="password" />
                     </span>
-                    <div className="forget_link">Forget Password?</div>
-
                     <div className="login_btn_wraper">
                       <button type="submit" className="login_btn">
                         Login

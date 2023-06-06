@@ -18,17 +18,13 @@ import jwt_decode from "jwt-decode";
 import { setCurrentUser } from "../src/redux/reducers/userReducer";
 import EditItem from "./components/EditItem";
 
-function App(props) {
+const App = (props) => {
   const dispatch = useDispatch();
   const cookies = new Cookies();
-
-  // const UserRoutes = () => {
-  //   const userToken = cookies?.get("user_token");
-  //   return userToken !== undefined ? <Outlet /> : <Navigate to="/" />;
-  // };
-
+  const userToken = cookies?.get("user_token");
   useEffect(() => {
     const token = cookies.get("user_token");
+    console.log("userToken", userToken === undefined);
     if (token) {
       const user = jwt_decode(token);
       // console.log("get_user", user);
@@ -47,16 +43,37 @@ function App(props) {
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/home" element={<Home />} />
+          <Route
+            path="/home"
+            element={userToken !== undefined ? <Home /> : <Navigate to="/" />}
+          />
           <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/add-category" element={<AddCat />} />
-          <Route path="/add-car" element={<AddItem />} />
-          <Route path="/edit-category" element={<EditCat />} />
-          <Route path="/edit-car" element={<EditItem />} />
+          <Route
+            path="/add-category"
+            element={userToken !== undefined ? <AddCat /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/add-car"
+            element={
+              userToken !== undefined ? <AddItem /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/edit-category"
+            element={
+              userToken !== undefined ? <EditCat /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/edit-car"
+            element={
+              userToken !== undefined ? <EditItem /> : <Navigate to="/" />
+            }
+          />
         </Routes>
       </Router>
     </>
   );
-}
+};
 
 export default App;
