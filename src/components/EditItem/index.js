@@ -7,10 +7,12 @@ import {
   deleteCategory,
   getAllCategory,
 } from "../../redux/reducers/categoryReducer";
-import { addCar } from "../../redux/reducers/carReducer";
-import { useNavigate } from "react-router-dom";
+import { addCar, updateCar } from "../../redux/reducers/carReducer";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const AddItem = () => {
+const EditItem = () => {
+  const { state } = useLocation();
+  console.log("ali raza", state);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -19,13 +21,13 @@ const AddItem = () => {
   const [showImage, setShowImage] = useState("");
   const defaultValues = {
     profile: "",
-    make: "",
-    modal: "",
-    year: "",
-    color: "",
-    Mileage: "",
-    Description: "",
-    categoryId: "",
+    make: state.title,
+    modal: state.model,
+    year: state.year,
+    color: state.color,
+    Mileage: state.milage,
+    Description: state.description,
+    categoryId: state.categoryId,
   };
   useEffect(() => {
     if (userReducer) {
@@ -45,7 +47,7 @@ const AddItem = () => {
     Description: yup.string().required("Please enter your Description"),
     categoryId: yup.string().required("Please select your category"),
   });
-  const handleSubmit = async (value, { resetForm }) => {
+  const handleSubmit2 = async (value, { resetForm }) => {
     console.log("==============value check presale", value);
     const formData = new FormData();
     formData.append("title", value.make);
@@ -57,7 +59,11 @@ const AddItem = () => {
     formData.append("file", value.profile);
     formData.append("categoryId", value.categoryId);
     formData.append("belongsTo", userReducer?._id);
-    let res = await dispatch(addCar(formData));
+    let obj = {
+      data: formData,
+      id: state._id,
+    };
+    let res = await dispatch(updateCar(obj));
     if (res.payload) {
       navigate("/home");
     }
@@ -66,11 +72,11 @@ const AddItem = () => {
   return (
     <>
       <div className="home_container">
-        <h1 className="add_card_title">Add car</h1>
+        <h1 className="add_card_title">Edit car</h1>
         <Formik
           initialValues={defaultValues}
           validationSchema={UserValidateSchema}
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit2}
         >
           {({ values, setFieldValue }) => (
             <Form>
@@ -85,9 +91,6 @@ const AddItem = () => {
                           setShowImage(URL.createObjectURL(e.target.files[0]));
                         }}
                       />
-                      {/* <label for="upload10" className="update_profile_pic">
-                        upload Car
-                      </label> */}
                     </div>
                   ) : (
                     <img className="upload_show_img" src={showImage} />
@@ -223,16 +226,15 @@ const AddItem = () => {
                   </div>
                 </div>
                 <button className="cat_submit" type="submit">
-                  Submit
+                  Update
                 </button>
               </div>
             </Form>
           )}
         </Formik>
-        <DataTableCom />
       </div>
     </>
   );
 };
 
-export default AddItem;
+export default EditItem;

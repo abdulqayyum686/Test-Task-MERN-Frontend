@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import axiosInstance from "../src/axiosInstance";
 import jwt_decode from "jwt-decode";
 import { setCurrentUser } from "../src/redux/reducers/userReducer";
+import EditItem from "./components/EditItem";
 
 function App() {
   const dispatch = useDispatch();
@@ -61,7 +62,7 @@ function App() {
           <Route path="/add-category" element={<AddCat />} />
           <Route path="/add-car" element={<AddItem />} />
           <Route path="/edit-category" element={<EditCat />} />
-          <Route path="/edit-car" element={<AddItem />} />
+          <Route path="/edit-car" element={<EditItem />} />
         </Routes>
       </Router>
     </>
