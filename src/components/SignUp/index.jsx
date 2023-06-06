@@ -14,13 +14,9 @@ const SignUp = () => {
   const [values, setValues] = useState(null);
   console.log("location value", values?.value.description);
   const defaultValues = {
-    username:"",
     email: "",
-    location: "",
-    availability: "",
     password: "",
     cpassword: "",
-    accountType: "",
   };
   const UserValidateSchema = yup.object().shape({
     email: yup
@@ -28,24 +24,19 @@ const SignUp = () => {
       .email("Invalid email format")
       .required("email is required !"),
     password: yup.string().required("Password is required*"),
-    username: yup.string().required("username is required*"),
-    accountType: yup.string().required("accountType is required!"),
+
     cpassword: yup
       .string()
       .oneOf([yup.ref("password"), null], "password not match"),
   });
 
   const handleSubmit = (value, { resetForm }) => {
-
-
     const formData = new FormData();
     formData.append("email", value.email);
-    formData.append("location", values);
-    formData.append("availability", values);
     formData.append("password", value.password);
-    formData.append("accountType", "user");
+
     const data = {
-      username:value.username,
+      username: value.username,
       email: value.email,
       location: values?.value.description,
       availability: value.availability,
@@ -73,14 +64,9 @@ const SignUp = () => {
         {({ values, setFieldValue }) => (
           <Form>
             <div className="login_main_container">
-              <div className="signUp_img_area">
-           
-          
-              </div>
+              <div className="signUp_img_area"></div>
               <div className="signUP_from_box">
-                <div className="logn_from_logo">
-         
-                </div>
+                <div className="logn_from_logo"></div>
                 <div className="logo_form_text_box">
                   <div className="login_content_box">
                     <div className="login_heading">Signup</div>
@@ -100,8 +86,6 @@ const SignUp = () => {
                       <ErrorMessage name="email" />
                     </span>
 
-         
-             
                     <div className="login_feild">
                       {" "}
                       <div className="login_feild_box">

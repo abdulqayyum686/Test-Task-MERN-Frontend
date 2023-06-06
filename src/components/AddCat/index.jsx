@@ -1,21 +1,28 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { addCategory } from "../../redux/reducers/categoryReducer";
 
 const AddCat = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const userReducer = useSelector((s) => s.userReducer.currentUser);
   const [category, setCategory] = useState({
     title: "",
     belongsTo: "",
   });
-  
+
   const handelChane = (e) => {
     setCategory({ ...category, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = (e) => {
-    dispatch(addCategory({ ...category, belongsTo: userReducer._id }));
+  const onSubmit = async (e) => {
+    let res = await dispatch(
+      addCategory({ ...category, belongsTo: userReducer._id })
+    );
+    if (res.payload) {
+      navigate("/home");
+    }
     setCategory({ ...category, title: "" });
   };
 

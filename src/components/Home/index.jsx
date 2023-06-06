@@ -139,9 +139,9 @@ const Home = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        let res = dispatch(deleteCategory(row._id));
+        let res = await dispatch(deleteCategory(row._id));
         if (res.payload) {
           dispatch(getAllCategory(userReducer?._id));
         }
@@ -154,7 +154,7 @@ const Home = () => {
         <div className="add_new_box">
           <Link to="/add-category">
             <div className="add_new_opt" onClick={() => goTo("/add-category")}>
-              Add category
+              Add Category
             </div>
           </Link>
           <Link to="/add-car">

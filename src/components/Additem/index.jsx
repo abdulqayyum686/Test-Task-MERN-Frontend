@@ -25,7 +25,7 @@ const AddItem = () => {
     color: "",
     Mileage: "",
     Description: "",
-    categoryId: "",
+    categoryId: categoryReducer?.getAllCategory[0]._id,
   };
   useEffect(() => {
     if (userReducer) {

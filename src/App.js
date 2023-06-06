@@ -18,7 +18,7 @@ import jwt_decode from "jwt-decode";
 import { setCurrentUser } from "../src/redux/reducers/userReducer";
 import EditItem from "./components/EditItem";
 
-function App() {
+function App(props) {
   const dispatch = useDispatch();
   const cookies = new Cookies();
 
@@ -38,18 +38,8 @@ function App() {
           dispatch(setCurrentUser(res?.data?.user));
         })
         .catch((e) => {});
-      // if (window.location.pathname.includes("login")) {
-      //   props.history.push(user?.is_admin ? "/admin-dashboard" : "/");
-      // }
-      // if (lastlogin === "true") {
-      //   props.history.push("/admin-dashboard");
-      // } else {
-      //   props.history.push("/");
-      // }
     } else {
-      // if (!window.location.href.includes("/page-register")) {
-      //   props.history.push("/login");
-      // }
+      // props.history.push("/");
     }
   }, []);
   return (
