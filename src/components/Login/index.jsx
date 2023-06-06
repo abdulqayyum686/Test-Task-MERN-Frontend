@@ -7,15 +7,19 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { userLogin } from "../../redux/reducers/userReducer"
+import { userLogin } from "../../redux/reducers/userReducer";
 import { useSelector } from "react-redux";
-import { getUserProducts, getAllrProducts, getPaymentStatus } from "../../redux/reducers/userReducer"
+import {
+  getUserProducts,
+  getAllrProducts,
+  getPaymentStatus,
+} from "../../redux/reducers/userReducer";
 
 const Login = () => {
-  const navigate = useNavigate()
-  const currentUser = useSelector((state) => state.user.currentUser)
+  const navigate = useNavigate();
+  const currentUser = useSelector((state) => state.userReducer.currentUser);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const defaultValues = {
     email: "",
     password: "",
@@ -28,22 +32,16 @@ const Login = () => {
     password: yup.string().required("Password is required*"),
   });
   const handleSubmit = async (value, { resetForm }) => {
-
     const formData = new FormData();
     formData.append("email", value.email);
     formData.append("password", value.password);
     const data = {
       email: value.email,
-      password: value.password
-    }
+      password: value.password,
+    };
     resetForm({ value: "" });
-    let loginRes = await dispatch(userLogin(data))
-
-
-
-  
-}
-
+    let loginRes = await dispatch(userLogin(data));
+  };
 
   return (
     <>
@@ -55,18 +53,13 @@ const Login = () => {
         {({ values, setFieldValue }) => (
           <Form>
             <div className="login_main_container">
-              <div className="login_img_area">
-      
-              </div>
+              <div className="login_img_area"></div>
 
               <div className="login_from_box">
-                <div className="logn_from_logo">
-          
-                </div>
+                <div className="logn_from_logo"></div>
                 <div className="logo_form_text_box">
                   <div className="login_content_box">
                     <div className="login_heading">Login</div>
-          
 
                     <div className="login_feild">
                       {" "}

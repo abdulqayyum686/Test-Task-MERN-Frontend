@@ -1,18 +1,16 @@
-import { configureStore , getDefaultMiddleware, } from "@reduxjs/toolkit";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import carReducer from "./reducers/carReducer";
+import categoryReducer from "./reducers/categoryReducer";
 import userReducer from "./reducers/userReducer";
-import messageReducer from "./reducers/messageReducer";
-import adminReducer from "./reducers/adminReducer"
-import clientReducer from "./reducers/clientReducer"
 
 export const store = configureStore({
   reducer: {
-    admin: adminReducer,
-    client: clientReducer,
-    user: userReducer,
-    messageReducer: messageReducer,
+    categoryReducer: categoryReducer,
+    carReducer: carReducer,
+    userReducer: userReducer,
   },
   middleware: (getDefaultMiddleware) =>
-  getDefaultMiddleware({
-    serializableCheck: false,
-  }),
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });

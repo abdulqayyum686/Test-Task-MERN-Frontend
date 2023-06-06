@@ -1,29 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./home.css";
-import adcard from "../../assets/images/adcard.png";
-import adcard2 from "../../assets/images/adcard2.png";
-import StarImg from "../../assets/images/Star.png";
-import edit from "../../assets/images/edit.png";
-import deleteIcon from "../../assets/images/delete.png";
 import { Link } from "react-router-dom";
-import Modal from "react-bootstrap/Modal";
-import { AiOutlineCloseCircle } from "react-icons/ai";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
-import { addProduct, getUserProducts, deleteProduct, updateProduct } from "../../redux/reducers/userReducer";
 import { useDispatch, useSelector } from "react-redux";
-import { Base_Url } from "../../config/baseUrl";
-import { Calendar, DateObject } from "react-multi-date-picker";
-import handleDate from "../../redux/reducers/userReducer"
-import moment from 'moment'
-import Swal from 'sweetalert2'
-import DataTableCom from "./dataTable"
-
-
-
+import moment from "moment";
+import Swal from "sweetalert2";
+import DataTableCom from "./dataTable";
 
 const Home = () => {
-  const [update, setUpdate] = useState()
+  const [update, setUpdate] = useState();
   const [show, setShow] = useState(false);
   const [editmodal, setEditModal] = useState(false);
   const [support, setSupport] = useState(false);
@@ -63,17 +49,7 @@ const Home = () => {
       currencySymbol: "",
     },
   ]);
-  const currentUser = useSelector((state) => state.user.currentUser);
-  const userProducts = useSelector((state) => state.user.userProducts);
-  const user_id = currentUser?._id;
-  useEffect(() => {
-    if (user_id) {
-      dispatch(getUserProducts(user_id));
-
-    }
-
-    setSupport(true);
-  }, [user_id]);
+  const currentUser = useSelector((state) => state.userReducer.currentUser);
 
   const dispatch = useDispatch();
   const handleImageChange1 = (e) => {
@@ -162,12 +138,11 @@ const Home = () => {
     formData.append("image3", inputs.image3);
     formData.append("audioFile", inputs.audioFile);
     formData.append("vedioMasg", inputs.vedioMasg);
-    formData.append("current", user_id);
+    // formData.append("current", user_id);
     formData.append("offers", JSON.stringify(more));
-    dispatch(addProduct(formData));
+
     setSupport(true);
   };
-
 
   const handleCalnder = (date, i) => {
     const newState = [...more];
@@ -179,32 +154,27 @@ const Home = () => {
     setMore(newState);
   };
   const handleDeleteProduct = (id) => {
-    console.log("click")
+    console.log("click");
     Swal.fire({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       text: "You want to delete this product!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'delete!'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "delete!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(deleteProduct(id))
         setSupport(true);
-
       }
-    }
-
-    )
-
-  }
+    });
+  };
   const handleEditProduct = (data) => {
-    console.log("edit", data.offers)
-    setUpdate(data)
-    setEditModal(true)
-    setEditMore(JSON.parse(data.offers))
-  }
+    console.log("edit", data.offers);
+    setUpdate(data);
+    setEditModal(true);
+    setEditMore(JSON.parse(data.offers));
+  };
   const handleEditChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -285,34 +255,27 @@ const Home = () => {
     formData.append("image3", update?.image3);
     formData.append("audioFile", update?.audioFile);
     formData.append("vedioMasg", update?.vedioMasg);
-    formData.append("current", user_id);
+    // formData.append("current", user_id);
     formData.append("offers", JSON.stringify(editmore));
 
     let obj = {
       id: update._id,
-      data: formData
-    }
+      data: formData,
+    };
 
-    dispatch(updateProduct(obj));
-    dispatch(getUserProducts(user_id));
-    setEditModal(false)
+    setEditModal(false);
     setSupport(true);
     Swal.fire({
-      position: 'center',
-      icon: 'success',
-      title: 'This product update successfully',
+      position: "center",
+      icon: "success",
+      title: "This product update successfully",
       showConfirmButton: false,
-      timer: 1500
-    })
+      timer: 1500,
+    });
   };
-
-  console.log("userProducts ", userProducts)
-
 
   return (
     <>
-{/* 4020024601120858 */}
-
       <div className="home_container">
         <div className="add_new_box">
           <Link to="/add-cat">
@@ -321,18 +284,15 @@ const Home = () => {
             </div>
           </Link>
           <Link to="/add-item">
-          <div className="add_new_opt" onClick={handleShow}>
-            Add car
-          </div>
+            <div className="add_new_opt" onClick={handleShow}>
+              Add car
+            </div>
           </Link>
         </div>
         <div className="home_card_box">
           <DataTableCom />
         </div>
       </div>
-
-
-
     </>
   );
 };

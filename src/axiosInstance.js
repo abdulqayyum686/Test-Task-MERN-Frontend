@@ -4,7 +4,7 @@ const cookies = new Cookies();
 
 axios.defaults.headers.authorization = cookies.get("token");
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL,
+  baseURL: "http://localhost:6002/",
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "*",
   "Access-Control-Allow-Headers":
